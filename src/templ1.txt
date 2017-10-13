@@ -1,0 +1,113 @@
+class TableManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      head_names: ['qwe0', 'qwe1'],
+      rows: [
+        [1, 2],
+        [3, 4]
+      ]
+    };
+  }  
+
+  AddRow() {
+    let newRows = this.state.rows;
+    newRows.push([0, 0]);
+    this.setState({rows: newRows});
+  }
+
+  render() {
+    return (
+      <div>
+        <Table head={this.state.head_names} rows={this.state.rows} />
+        <hr />
+        <button onClick={ this.AddRow.bind(this) }>Add row</button>
+      </div>
+    );
+  }
+}
+
+class Table extends React.Component {
+  render() {
+    return (
+      <table>
+        <thead>
+          {this.genHead()}
+        </thead>
+        <tbody>
+          {this.genRow()}
+        </tbody>
+      </table>
+    );
+  }
+
+  genHead() {
+    var head = this.props.head;
+
+    return head.map(function(v, i) {
+      return (
+        <th key={'th' + i}>
+          {v}
+        </th>
+      );
+    });
+  }
+
+  genRow() {
+    var rows = this.props.rows;
+
+    return rows.map(function(v, i) {
+      var tmp = v.map(function(v2, j) {
+        return (
+          <td key={'td' + i + '_' + j}>
+            {v2}
+          </td>
+        );
+      });
+
+      return (
+        <tr key={'tr' + i}>
+          {tmp}
+        </tr>
+      )
+    });
+  }
+}
+
+ReactDOM.render(
+  <TableManagement />,
+  document.getElementById('root')
+);
+
+/*var elements = ReactDOM.findDOMNode(this).getElementsByClassName('chair-cell');
+    var ch_sold = [],
+        ch_default = [];
+        console.log(elements);
+    for (var i = 0, arr_size = elements.length; i < arr_size; i++) {
+      console.log(elements[i].children[0].className);
+    }*/
+
+
+   And try get states
+  `code`
+   countSold(e){
+    this.state.rows.map(function(row){
+        row.map(function(col){
+            console.log(col);
+        });
+    });
+  }
+
+  render() {
+    return (
+      <div className="hall">
+        <Table rows={this.state.rows} />
+        <button className = "btn-default" onClick={(e)=>this.countSold(this)}>
+            TOTAL SOLD
+        </button>
+      </div>
+    );
+  }
+  `code`
