@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './Hall.css';
 
 class HallCol extends Component {
@@ -7,26 +8,25 @@ class HallCol extends Component {
       this.state = {
         chair_cls:'chair-default'
       };
+      this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick(e) {
-      var chair_cls = null;
+    handleClick() {
+      let chair_cls = null;
       if(this.state.chair_cls==="chair-default") {
-          chair_cls = 'chair-sold';
-        }
-        else {
-          chair_cls = 'chair-default';
-        }
-
-        this.setState({
-          chair_cls: chair_cls
-        })
-        this.props.changeState(chair_cls);
+        chair_cls = 'chair-sold';
+      } else {
+        chair_cls = 'chair-default';
       }
+
+      this.setState({
+        chair_cls: chair_cls
+      });
+    }
 
     render(){
       return(
-            <div className={this.state.chair_cls} onClick={(e)=>this.handleClick(e)}>
+            <div className={this.state.chair_cls} onClick={this.handleClick}>
               <div className="backrest">
                   <p>{this.props.seat_number}</p>
               </div>
@@ -39,66 +39,10 @@ class HallCol extends Component {
     }
 }
 
-class Hall extends React.Component {
-  constructor(props) {
-    super(props);
-    var rows_num = this.props.rows;
-    var cols_num = this.props.cols;
-
-    var row = [];
-    for (var i = 0; i < rows_num; i++) {
-      var col = [];
-      for (var k = 0; k< cols_num; k++) {
-          col.push(<HallCol row = {i+1} seat_number = {k+1}  changeState={this.props.changeState} />);
-      }
-      row.push(col);
-    }
-    this.state = {
-      rows: row
-    };
-  }  
-
-  AddRow() {
-    let newRows = this.state.rows;
-    newRows.push([0, 0]);
-    this.setState({rows: newRows});
-  }
-
-  changeState(value) {
-    this.setState({ 
-      chair_cls: value 
-    });
-  }
-
-  countSold(e){
-   this.state.rows.map(function(row){
-        row.map(function(col){
-            console.log(col);
-        });
-    });
-  }
-
-  render() {
-    return (
-      <div className="hall">
-        <Table rows={this.state.rows} changeState={this.changeState} />
-        <button className = "btn-default" onClick={(e)=>this.countSold(this)}>
-            TOTAL SOLD
-        </button>
-      </div>
-    );
-  }
-}
-
 class Table extends React.Component {
-  render() {
-    return (
-      <table className="hall-grid" >
-        <tbody>
-          {this.genRow()}
-        </tbody>
-      </table>
-    );
+  constructor() {
+    super();
+    this.genRow = this.genRow.bind(this);
   }
 
   genRow() {
@@ -118,6 +62,62 @@ class Table extends React.Component {
         </tr>
       )
     });
+  }
+
+  render() {
+    return (
+      <table className="hall-grid" >
+        <tbody>
+          {this.genRow()}
+        </tbody>
+      </table>
+    );
+  }
+}
+
+class Hall extends React.Component {
+  constructor(props) {
+    super(props);
+    var rows_num = this.props.rows;
+    var cols_num = this.props.cols;
+
+    this.AddRow = this.AddRow.bind(this);
+    this.countSold = this.countSold.bind(this);
+
+    var row = []; 
+    for (var i = 0; i < rows_num; i++) {
+      var col = [];
+      for (var k = 0; k< cols_num; k++) {
+          col.push(<HallCol row = {i+1} seat_number = {k+1} />);
+      }
+      row.push(col);
+    }
+
+    this.state = {
+      rows: row
+    };
+  }
+
+  AddRow() {
+    let newRows = this.state.rows;
+    newRows.push([0, 0]);
+    this.setState({rows: newRows});
+  }
+  
+  countSold(){
+     //let snapCount = React.Children.toArray(this.props.children).filter((item) => item.props.className === 'snap').length;
+     console.log();
+  }
+
+  render() {
+    return (
+      <div className="hall">
+        <Table rows={this.state.rows} />
+        <button className = "btn-default" onClick={this.countSold}>
+            TOTAL SOLD
+        </button>
+      </div>
+    );
   }
 }
 
